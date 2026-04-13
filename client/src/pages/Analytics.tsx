@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { API_BASE_URL } from '../lib/api';
 
 export default function Analytics() {
   const { data: analytics, isLoading } = useQuery({
     queryKey: ['analytics'],
     queryFn: async () => {
-      const res = await fetch('/api/analytics/summary', { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/api/analytics/summary`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch analytics');
       return res.json();
     }

@@ -14,6 +14,8 @@ import Policies from './pages/Policies';
 
 import { useEffect } from 'react';
 
+import { API_BASE_URL } from './lib/api';
+
 // Protected Route Guard
 const ProtectedRoute = () => {
     const { isAuthenticated, isLoading } = useAuthStore();
@@ -30,7 +32,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const res = await fetch(`${API_BASE_URL}/api/auth/me`, { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);

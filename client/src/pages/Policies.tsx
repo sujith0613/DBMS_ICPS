@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '../lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { format } from 'date-fns';
@@ -7,7 +8,7 @@ export default function Policies() {
   const { data: policies, isLoading } = useQuery({
     queryKey: ['policies'],
     queryFn: async () => {
-      const res = await fetch('/api/policies');
+      const res = await fetch(`${API_BASE_URL}/api/policies`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch policies');
       return res.json();
     }

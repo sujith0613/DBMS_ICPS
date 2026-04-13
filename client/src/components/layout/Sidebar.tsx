@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/useAuthStore';
+import { API_BASE_URL } from '../../lib/api';
 import { 
   LayoutDashboard, 
   FileStack, 
@@ -25,7 +26,7 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch(`${API_BASE_URL}/api/auth/logout`, { method: 'POST', credentials: 'include' });
       queryClient.clear();
       logout();
       navigate('/login');

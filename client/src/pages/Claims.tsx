@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -13,7 +14,7 @@ export default function Claims() {
   const { data: claims, isLoading } = useQuery({
     queryKey: ['claims', statusFilter],
     queryFn: async () => {
-      const url = statusFilter === 'All' ? '/api/claims' : `/api/claims?claim_status=${encodeURIComponent(statusFilter)}`;
+      const url = statusFilter === 'All' ? `${API_BASE_URL}/api/claims` : `${API_BASE_URL}/api/claims?claim_status=${encodeURIComponent(statusFilter)}`;
       const res = await fetch(url, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch claims');
       return res.json();

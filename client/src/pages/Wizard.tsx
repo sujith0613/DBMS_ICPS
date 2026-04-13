@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -48,7 +49,7 @@ export default function Wizard() {
 
       xhr.onerror = () => reject(new Error(`Network error uploading ${file.name}`));
 
-      xhr.open('POST', `/api/claims/${claimId}/documents`);
+      xhr.open('POST', `${API_BASE_URL}/api/claims/${claimId}/documents`);
       xhr.withCredentials = true; 
       xhr.send(formData);
     });
@@ -63,7 +64,7 @@ export default function Wizard() {
   const { data: policies } = useQuery({
     queryKey: ['my-policies'],
     queryFn: async () => {
-      const res = await fetch('/api/policies', { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/api/policies`, { credentials: 'include' });
       return res.json();
     }
   });
@@ -71,7 +72,7 @@ export default function Wizard() {
   const { data: providers } = useQuery({
     queryKey: ['providers'],
     queryFn: async () => {
-      const res = await fetch('/api/service-providers', { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/api/service-providers`, { credentials: 'include' });
       return res.json();
     }
   });
@@ -86,7 +87,7 @@ export default function Wizard() {
     try {
       const policy = policies.find((p: any) => p._id === selectedPolicy);
       
-      const res = await fetch('/api/claims', {
+      const res = await fetch(`${API_BASE_URL}/api/claims`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

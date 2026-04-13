@@ -1,4 +1,5 @@
 import { useAuthStore } from '../store/useAuthStore';
+import { API_BASE_URL } from '../lib/api';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import MetricCard from '../components/ui/MetricCard';
@@ -15,7 +16,7 @@ export default function Dashboard() {
   const { data: analytics, isLoading, isError: analyticsError } = useQuery({
     queryKey: ['analytics-summary'],
     queryFn: async () => {
-      const res = await fetch('/api/analytics/summary', { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/api/analytics/summary`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch analytics');
       return res.json();
     }
@@ -24,7 +25,7 @@ export default function Dashboard() {
   const { data: recentClaims, isLoading: claimsLoading, isError: claimsError } = useQuery({
     queryKey: ['recent-claims'],
     queryFn: async () => {
-      const res = await fetch('/api/claims?limit=10', { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/api/claims?limit=10`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch claims');
       return res.json();
     }

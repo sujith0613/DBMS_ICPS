@@ -1,0 +1,2205 @@
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Sri Sivasubramaniya Nadar College of Engineering
+Department of Computer Science and Engineering
+UCS3402 — Database Management Systems
+Assignment I and II — Report
+INSURANCE CLAIM PROCESSING
+SYSTEM (ICPS)
+Document-Based NoSQL Database (MongoDB)
+Submitted by:
+Sankar Shailesh    3122245001138
+S. Sree Krishna    3122245001162
+M. Sujith             3122245001172
+Submitted to:
+Dr.  P. Mirunalini
+Department of Computer Science and Engineering
+Class:  CSE    Section:  C
+Academic Year:  2025–2026     —    Semester:  IV
+SSN College of Engineering   –
+----------------Page (0) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Contents
+1   Introduction                                                                                               3
+2   Problem Statement                                                                                    3
+3   System Scope and Constraints                                                                   3
+3.1    Scope    .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .     3
+3.2    Constraints   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .     4
+4   Identification of Entities, Attributes, and Relationships                            4
+4.1    Design Procedure Adopted  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .     4
+4.2    Justification of Identified Entities   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .     6
+4.3    Justification of Relationships .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .     8
+5   Conceptual ER Diagram                                                                            9
+6   Entities with Attributes, Data Types, and Keys                                      17
+6.1    Identified Collections (Entities)   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   17
+6.2    Entity 1:  PolicyHolder   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   17
+6.3    Entity 2:  Branch   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   18
+6.4    Entity 3:  Event (Policy Type Classifier)    .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   19
+6.5    Entity 4:  Policy  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   20
+6.6    Entity 5:  ServiceProvider .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   21
+6.7    Entity 6:  Claim (with Embedded Documents and Status History)   .  .  .  .  .   21
+6.8    Entity 7:  Surveyor   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   23
+6.9    Entity 8:  ClaimReview  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   24
+6.10  Entity 9:  Payment   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   25
+6.11  Summary of Entities and Storage   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   25
+6.12  Key Constraints Summary  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   26
+7   Relationships with Types, Implementation, and Participation                27
+7.1    PolicyHolder – Policy (HAS) .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   27
+7.2    Branch – Policy (MANAGES)  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   27
+7.3    Event – Policy (CATEGORIZES)  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   27
+7.4    Policy – Claim (FILES)    .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   27
+7.5    Claim – ServiceProvider (HANDLES) .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+7.6    Event – Claim (TRIGGERS)    .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+7.7    Claim – ClaimDocument (HAS   DOCUMENT) .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+7.8    Claim – ClaimStatusHistory (HAS   HISTORY) .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+SSN College of Engineering   –  1
+----------------Page (1) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+7.9    Claim – ClaimReview (REVIEWED   BY) .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+7.10  Surveyor – ClaimReview (PERFORMS)   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+7.11  Claim – Payment (SETTLED   BY)   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+7.12  Final Relationship Summary Table   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   28
+8   Assignment 1                                                                                            29
+8.1    (a) Identify Entities, Attributes, and Relationships    .  .  .  .  .  .  .  .  .  .  .  .  .   29
+8.2    (b) Conceptual Diagram (NoSQL High-Level Model)   .  .  .  .  .  .  .  .  .  .  .  .   32
+8.3    (c) Map to Physical Schema  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   33
+8.4    (d) Functional Dependencies, Query Patterns, and Key Identification   .  .  .   36
+9   Functional Dependencies and Key Identification                                     39
+9.1    Introduction  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   39
+9.2    Functional Dependencies per Collection .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   39
+9.3    Derivation of Minimal Cover  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   41
+9.4    Key Identification  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   42
+10 Assignment 2:  Optimised NoSQL Database Schema Design                    42
+10.1  Objective of Schema Optimisation .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   42
+10.2  Frequently Executed Query Patterns   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   42
+10.3  Optimised Claims Collection Schema   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   43
+10.4  Embedding vs Referencing Optimisation Decisions .  .  .  .  .  .  .  .  .  .  .  .  .  .   43
+10.5  Denormalisation Strategy    .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   44
+10.6  Index Optimisation  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   44
+10.7  Partition Key and Scalability   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   45
+10.8  Performance Optimisation Benefits   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   45
+10.9  Data Consistency Considerations   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   45
+10.10Final Optimised Schema Architecture Summary  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   45
+11 Implementation Details                                                                            46
+11.1  Collection Initialisation .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   46
+11.2  Sample CRUD Operations  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .   46
+12 Conclusion                                                                                                49
+13 Team Member Contributions                                                                   49
+SSN College of Engineering   –  2
+----------------Page (2) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+1.  Introduction
+The Insurance Claim Processing System (ICPS) is a large-scale enterprise system used
+by insurance companies to manage policyholders, insurance policies, claim submissions,
+verification processes, and final approval or rejection of claims.  The system ensures data
+integrity, consistency, and efficient claim lifecycle management across multiple insurance
+product lines including Medical, Vehicle, Property/Fire, Life Insurance, Natural Disaster,
+and Theft policies.
+This report documents the complete database design for ICPS across two assignments.
+Assignment  1  covers  the  conceptual  design  using  an  Entity-Relationship  (ER)  model,
+identification and justification of entities and relationships, and the ER diagram.  Assign-
+ment 2 extends the design to a document-based NoSQL database (MongoDB), covering
+NoSQL schema design, physical collection schemas, optimisation strategies, and CRUD
+operations.
+2.  Problem Statement
+The objective of this project is to design a comprehensive database schema for the In-
+surance Claim Processing System (ICPS). The system must support policyholder regis-
+tration, policy management, claim submission, verification and approval workflows, and
+reporting, while maintaining data integrity and minimising redundancy.
+For Assignment 1, the design uses a traditional relational database modelling approach
+with  an  ER  diagram.   For  Assignment  2,  the  design  is  extended  to  a  document-based
+NoSQL database (MongoDB) to leverage schema flexibility, embedded document support,
+and horizontal scalability.
+The system must handle:
+•  Multiple insurance product types through a flexible Event-based classification mech-
+anism
+•  Branch-level policy management
+•  Third-party service provider tracking for claims
+•  Complete claim status audit trail
+•  Claim verification by authorised surveyors
+•  Payment settlement for approved claims
+3.  System Scope and Constraints
+3.1  Scope
+The system includes:
+•  Policyholder registration and management
+SSN College of Engineering   –  3
+----------------Page (3) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+•  Branch management and association with policies
+•  Event-based flexible insurance policy categorisation (Medical,  Vehicle,  Property/-
+Fire, Life, Natural Disaster, Theft)
+•  Insurance policy management
+•  Service provider tracking (hospitals, garages, inspection firms)
+•  Claim submission and tracking
+•  Claim document management
+•  Claim review and approval process
+•  Surveyor and claim verification handling
+•  Claim status history and audit trail
+•  Payment settlement for approved claims
+3.2  Constraints
+•  Each claim must be associated with exactly one policy.
+•  Each policy must be linked to exactly one Event (policy type classifier).
+•  Each policy must be issued by exactly one Branch.
+•  A policyholder may own multiple policies.
+•  A policy can have multiple claims.
+•  A claim must be reviewed before approval or rejection.
+•  Each claim must be associated with exactly one Service Provider.
+•  Each claim is triggered by exactly one Event type.
+•  Claim status history must be maintained for auditing purposes.
+•  Unique identifiers must be maintained for all major entities.
+•  Aadhaar number,  policy number,  claim number,  licence number,  and transaction
+reference number must be globally unique.
+4.  Identification of Entities, Attributes, and Relationships
+4.1  Design Procedure Adopted
+The database design for the ICPS was developed using a structured conceptual modelling
+approach to ensure completeness, correctness, and real-world applicability.
+Requirement Analysis
+The problem statement was carefully analysed to extract key business objects and op-
+erational  activities.   Important  nouns  such  as  policyholders,  policies,  branches,  events,
+claims, service providers, surveyors, reviews, status histories, and payments were identified
+as potential entities.  The interactions between these objects were studied to understand
+SSN College of Engineering   –  4
+----------------Page (4) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+workflow dependencies across the claim lifecycle.
+Identification of Core Business Entities
+Entities were selected based on the following criteria:
+•  The object must have independent existence.
+•  The object must store persistent data.
+•  The object must have a unique identifier.
+•  The object must participate in system transactions.
+Identification of Attributes
+Attributes were determined based on:
+•  Information required to uniquely identify each entity.
+•  Data necessary for verification, validation, and claim processing.
+•  Attributes required for auditing and reporting.
+•  Elimination of redundant or derived storage wherever possible.
+Identification of Relationships
+Relationships were derived from business rules such as:
+•  A policyholder owns one or more policies.
+•  A branch manages one or more policies.
+•  An event categorises one or more policies.
+•  A policy can have multiple claims.
+•  A claim is handled by a service provider.
+•  An event triggers a claim.
+•  A claim has supporting documents.
+•  A claim has a status history.
+•  A surveyor reviews claims through a ClaimReview.
+•  Approved claims are settled through payment.
+Classification of Attribute Types
+Attributes were classified as:
+•  Simple attributes — atomic, indivisible values
+•  Composite attributes — Address (consisting of street, city, state, pincode)
+•  Multivalued attributes — Phone (a policyholder may have multiple contact num-
+bers)
+•  Derived attributes — Age (calculated from DOB), PolicyDuration (from Start-
+Date and EndDate), ClaimProcessingTime (from submission to decision)
+SSN College of Engineering   –  5
+----------------Page (5) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+•  Primary and candidate keys — unique identifiers for each entity
+Constraint Identification
+Participation constraints and cardinality ratios were assigned according to real-world in-
+surance operations to ensure data consistency and integrity.  All entities in this design are
+strong entities with their own primary keys.  This systematic approach ensures that the
+ER model accurately represents the real-world Insurance Claim Processing workflow.
+4.2  Justification of Identified Entities
+PolicyHolder
+The PolicyHolder entity represents customers who purchase insurance policies and sub-
+mit  claims.   This  entity  is  fundamental  because  the  claim  lifecycle  originates  from  the
+policyholder.
+PolicyHolderID uniquely identifies each customer.  AadhaarNo is a candidate key
+for verification.  Phone is a multivalued attribute.  Address is a composite attribute.
+Age is derived from DOB.
+PolicyHolder is modelled as a strong entity with its own primary key.
+Branch
+The  Branch  entity  represents  regional  offices  of  the  insurance  company  responsible  for
+issuing  and managing  policies.   Branch supports  regional  reporting and  managerial ac-
+countability.
+BranchID uniquely identifies each branch.  Branch is modelled as a strong entity
+in a 1:N relationship with Policy.
+Event
+The Event entity acts as a universal policy type classification mechanism, eliminating the
+need for separate subclass tables.  New insurance products are introduced by adding a
+new Event record only.
+EventID uniquely identifies each event type.  RiskLevel supports underwriting de-
+cisions.  Event is a strong entity participating in relationships with both Policy (CAT-
+EGORIZES) and Claim (TRIGGERS).
+Policy
+The Policy entity represents insurance agreements issued to policyholders through a spe-
+cific  branch,  categorised  by  an  event  type.   Claims  are  always  linked  to  a  valid  active
+policy.
+PolicyID is the primary key.  PolicyNumber is a candidate key.  PolicyDuration
+is derived from StartDate and EndDate.  Policy is a strong entity.
+SSN College of Engineering   –  6
+----------------Page (6) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+ServiceProvider
+The ServiceProvider entity represents third-party organisations (hospitals, vehicle repair
+centres, property inspection firms) whose services are associated with claims.
+ProviderID is the primary key.  LicenseNo is a candidate key ensuring regulatory
+compliance.  ServiceProvider is a strong entity in a 1:N relationship with Claim.
+Claim
+The Claim entity is the central transactional component of the ICPS. Claims must undergo
+validation, verification, and status tracking.
+ClaimID  is  the  primary  key.   ClaimNumber  is  a  candidate  key.   ClaimStatus
+represents workflow stages. ClaimProcessingTime is derived.  Claim carries EventID
+and ProviderID as foreign key attributes.
+Claim is a strong entity connected to Policy, ClaimDocument, ClaimStatusHistory,
+ClaimReview, ServiceProvider, Event, and Payment.
+ClaimDocument
+The ClaimDocument entity represents supporting documents for claim verification.  Each
+document belongs to exactly one claim and is identified by its own DocumentID as a
+primary key.
+ClaimDocument  is  modelled  as  a strong  entity  (updated  from  the  previous  weak
+entity design to reflect that each document has its own unique identifier independent of
+the composite key).
+ClaimStatusHistory
+The  ClaimStatusHistory  entity  represents  the  audit  trail  of  status  transitions  for  each
+claim.  Each status entry is uniquely identified by its own StatusID.
+ClaimStatusHistory is modelled as a strong entity (updated from the previous weak
+entity design), critical for regulatory compliance and dispute resolution.
+Surveyor
+The Surveyor entity represents authorised personnel responsible for claim verification and
+assessment. SurveyorID is the primary key.  LicenseNo is a candidate key.
+Surveyor is a strong entity participating in the claim review process.
+ClaimReview
+ClaimReview represents the review activity performed by surveyors on claims, resolving
+the many-to-many relationship between Claim and Surveyor.
+ReviewID is the primary key. ClaimReview stores ReviewDate, RecommendedAmount,
+and Remarks.
+ClaimReview is an associative strong entity.
+SSN College of Engineering   –  7
+----------------Page (7) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Payment
+The  Payment  entity  represents  financial  settlement  for  approved  claims.   Payment  is
+optional (only for approved claims).
+PaymentID is the primary key.  TransactionRefNo is a candidate key.  Payment is a
+strong entity in a 1:1 optional relationship with Claim.
+4.3  Justification of Relationships
+•  A PolicyHolder owns one or more Policies (1:N). PolicyHolder — Partial; Policy
+— Total.
+•  A Branch manages one or more Policies (1:N). Branch — Partial; Policy — Total.
+•  An Event categorises one or more Policies (1:N). Event — Partial; Policy — Total.
+•  A Policy generates  multiple Claims (1:N). Policy — Partial; Claim — Total.
+•  A  Claim  is  handled  by  one  ServiceProvider  (N:1).   Claim  —  Total;  Service-
+Provider — Partial.
+•  An Event triggers  one or more Claims (1:N). Event — Partial; Claim — Total.
+•  A Claim has multiple ClaimDocuments (1:N). Both participate; ClaimDocument
+— Total.
+•  A Claim has  multiple ClaimStatusHistory entries (1:N). Both — Total.
+•  A Claim is reviewed by  Surveyors through ClaimReview (M:N resolved).  Claim
+— Partial; ClaimReview — Total.
+•  A Surveyor performs  reviews through ClaimReview (1:N). Surveyor — Partial;
+ClaimReview — Total.
+•  A Claim  may  be settled by  one Payment  (1:1).   Claim  —  Partial;  Payment  —
+Total.
+SSN College of Engineering   –  8
+----------------Page (8) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+5.  Conceptual ER Diagram
+Figure 1.  ER Diagram for ICPS
+Entity 1:  PolicyHolder
+Entity Type:  Strong Entity
+Attribute           Description                Attribute
+Type
+Key Type
+PolicyHolderID      Unique identifier            Simple                   Primary Key
+Name                     Full name                       Simple                   —
+DOB                      Date of birth                  Simple                   —
+Age                        Calculated from DOB    Derived                  —
+Gender                   Gender                           Simple                   —
+AadhaarNo            National ID number       Simple                   Candidate
+Key
+Phone                    Contact numbers            Multivalued           —
+Address                 Residential address         Composite             —
+SSN College of Engineering   –  9
+----------------Page (9) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute           Description                Attribute
+Type
+Key Type
+Street                     Street name                    Simple (Part of
+Address)
+—
+City                       City name                      Simple (Part of
+Address)
+—
+State                      State name                     Simple (Part of
+Address)
+—
+Pincode                  Postal code                     Simple (Part of
+Address)
+—
+Entity 2:  Branch
+Entity Type:  Strong Entity
+Attribute           Description                Attribute
+Type
+Key Type
+BranchID               Unique branch
+identifier
+Simple                   Primary Key
+BranchName          Name of branch              Simple                   —
+Location                City / location                Simple                   —
+ManagerName       Branch manager             Simple                   —
+Contact                 Branch contact
+number
+Simple                   —
+Entity 3:  Event
+Entity Type:  Strong Entity
+Attribute           Description                Attribute
+Type
+Key Type
+EventID                 Unique event
+identifier
+Simple                   Primary Key
+EventName            Insurance type name      Simple                   —
+EventDescription   Description of
+coverage
+Simple                   —
+RiskLevel               Risk classification           Simple                   —
+Entity 4:  Policy
+Entity Type:  Strong Entity
+SSN College of Engineering   –  10
+----------------Page (10) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute           Description                Attribute
+Type
+Key Type
+PolicyID                Unique policy
+identifier
+Simple                   Primary Key
+PolicyNumber        Unique policy number    Simple                   Candidate
+Key
+PremiumAmount   Premium payable           Simple                   —
+CoverageAmount   Coverage amount           Simple                   —
+StartDate              Policy start date             Simple                   —
+EndDate                Policy end date               Simple                   —
+PolicyDuration      Derived from
+Start/End Date
+Derived                  —
+BranchID               Issuing branch (FK)       Simple                   Foreign Key
+Entity 5:  ServiceProvider
+Entity Type:  Strong Entity
+Attribute                  Description                Attribute
+Type
+Key Type
+ProviderID                    Unique provider
+identifier
+Simple                   Primary Key
+ProviderName               Name of provider            Simple                   —
+ProviderType                Hospital / Garage /
+Inspection
+Simple                   —
+Address                         Provider address            Composite             —
+Phone                            Contact number             Simple                   —
+LicenseNo                      Professional licence
+number
+Simple                   Candidate
+Key
+RecommendedAmount  Recommended
+settlement
+Simple                   —
+Remarks                        Notes on provider           Simple                   —
+Entity 6:  Claim
+Entity Type:  Strong Entity
+SSN College of Engineering   –  11
+----------------Page (11) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute                 Description                Attribute
+Type
+Key Type
+ClaimID                       Unique claim
+identifier
+Simple                   Primary Key
+ClaimNumber               Unique claim
+reference
+Simple                   Candidate
+Key
+ClaimDate                    Date claim was filed       Simple                   —
+ClaimAmount               Claimed amount             Simple                   —
+ClaimStatus                  Current workflow
+status
+Simple                   —
+ClaimProcessingTime   Time taken to process    Derived                  —
+EventID                        Event type (FK)            Simple                   Foreign Key
+PolicyID                       Related policy (FK)       Simple                   Foreign Key
+ProviderID                   Service provider (FK)     Simple                   Foreign Key
+Entity 7:  ClaimDocument
+Entity Type:  Strong Entity
+Attribute           Description                Attribute
+Type
+Key Type
+DocumentID          Unique document
+identifier
+Simple                   Primary Key
+ClaimID                 Parent claim (FK)          Simple                   Foreign Key
+FilePath                File storage path            Simple                   —
+DocumentType      Type of document          Simple                   —
+UploadDate           Date uploaded                Simple                   —
+Entity 8:  ClaimStatusHistory
+Entity Type:  Strong Entity
+Attribute           Description                Attribute
+Type
+Key Type
+StatusID                Unique status entry
+identifier
+Simple                   Primary Key
+ClaimID                 Parent claim (FK)          Simple                   Foreign Key
+Status                    Status value                   Simple                   —
+StatusDate            Date of status change     Simple                   —
+SSN College of Engineering   –  12
+----------------Page (12) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute           Description                Attribute
+Type
+Key Type
+UpdatedBy            Who made the
+update
+Simple                   —
+Entity 9:  ClaimReview
+Entity Type:  Associative Strong Entity
+Attribute                  Description                Attribute
+Type
+Key Type
+ReviewID                      Unique review
+identifier
+Simple                   Primary Key
+ClaimID                        Reviewed claim (FK)     Simple                   Foreign Key
+SurveyorID                    Reviewing surveyor
+(FK)
+Simple                   Foreign Key
+ReviewDate                   Date of review                Simple                   —
+RecommendedAmount  Recommended
+settlement
+Simple                   —
+Remarks                        Review comments          Simple                   —
+Entity 10:  Surveyor
+Entity Type:  Strong Entity
+Attribute           Description                Attribute
+Type
+Key Type
+SurveyorID            Unique surveyor
+identifier
+Simple                   Primary Key
+Name                     Name of surveyor           Simple                   —
+LicenseNo              Licence number              Simple                   Candidate
+Key
+Phone                    Contact number             Simple                   —
+Entity 11:  Payment
+Entity Type:  Strong Entity
+Attribute             Description                Attribute
+Type
+Key Type
+PaymentID             Unique payment
+identifier
+Simple                   Primary Key
+SSN College of Engineering   –  13
+----------------Page (13) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute             Description                Attribute
+Type
+Key Type
+ClaimID                  Settled claim (FK)         Simple                   Foreign Key
+PaymentDate          Date of payment             Simple                   —
+PaymentAmount     Amount paid                  Simple                   —
+PaymentMode         Mode of payment           Simple                   —
+TransactionRefNo   Bank transaction
+reference
+Simple                   Candidate
+Key
+Attribute Types Used
+Attribute
+Type
+Used In
+Simple                   Most attributes across all entities
+Composite             Address (PolicyHolder, ServiceProvider)
+Multivalued           Phone (PolicyHolder)
+Derived                  Age, PolicyDuration, ClaimProcessingTime
+Primary Key          All strong entities
+Candidate Key      AadhaarNo, PolicyNumber, ClaimNumber, LicenseNo
+(Surveyor & ServiceProvider), TransactionRefNo
+Foreign Key           BranchID (Policy), EventID and PolicyID and
+ProviderID (Claim), ClaimID (ClaimDocument,
+ClaimStatusHistory, ClaimReview, Payment),
+SurveyorID (ClaimReview)
+Relationship Documentation
+No  Relationship         Entity 1        Entity 2         Type       Description
+1     HAS                          PolicyHolder    Policy                Binary       Policyholder owns
+policies
+2     MANAGES               Branch            Policy                Binary       Branch issues
+policies
+3     CATEGORIZES       Event              Policy                Binary       Event classifies
+policy type
+4     FILES                       Policy              Claim                Binary       Policy generates
+claims
+5     HANDLES                Claim              ServiceProvider Binary       Claim linked to
+service provider
+SSN College of Engineering   –  14
+----------------Page (14) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+No  Relationship         Entity 1        Entity 2         Type       Description
+6     TRIGGERS              Event              Claim                Binary       Event type
+triggers a claim
+7     HAS DOCUMENT   Claim              ClaimDocumentBinary       Claim has
+supporting
+documents
+8     HAS HISTORY        Claim              ClaimStatusHistoryBinary       Claim has status
+audit trail
+9     REVIEWED BY      Claim              ClaimReview     Binary       Claim has reviews
+10    PERFORMS             Surveyor          ClaimReview     Binary       Surveyor performs
+review
+11    SETTLED BY          Claim              Payment           Binary       Claim settled
+through payment
+Participation and Cardinality Documentation
+No  Relationship         Entity            Min   Max  ParticipationCardinality
+1     HAS                          PolicyHolder     0         N        Partial
+1:N
+Policy                1         1         Total
+2     MANAGES               Branch              0         N        Partial
+1:N
+Policy                1         1         Total
+3     CATEGORIZES       Event                0         N        Partial
+1:N
+Policy                1         1         Total
+4     FILES                       Policy                0         N        Partial
+1:N
+Claim                1         1         Total
+5     HANDLES                Claim                1         N        Total
+N:1
+ServiceProvider 0         N        Partial
+6     TRIGGERS              Event                0         N        Partial
+1:N
+Claim                1         1         Total
+7     HAS DOCUMENT   Claim                0         N        Partial
+1:N
+ClaimDocument1         1         Total
+8     HAS HISTORY        Claim                1         N        Total
+1:N
+ClaimStatusHistory1         1         Total
+9     REVIEWED BY      Claim                0         N        Partial
+1:N
+ClaimReview     1         1         Total
+10    PERFORMS             Surveyor            0         N        Partial
+1:N
+ClaimReview     1         1         Total
+11    SETTLED BY          Claim                0         1         Partial
+1:1
+SSN College of Engineering   –  15
+----------------Page (15) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+No  Relationship         Entity            Min   Max  ParticipationCardinality
+Payment           1         1         Total
+SSN College of Engineering   –  16
+----------------Page (16) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+6.  Entities with Attributes, Data Types, and Keys
+6.1  Identified Collections (Entities)
+In a document-based NoSQL database, entities are represented as collections.  The ICPS
+system contains nine primary collections and four embedded entities.
+Main Collections
+• policyholders
+• branches
+• events
+• policies
+• service   providers
+• claims
+• surveyors
+• claim   reviews
+• payments
+Embedded Entities
+• phones[] — embedded array inside policyholders
+• address{} — embedded sub-document inside policyholders and service                                                         providers
+• documents[]  —  embedded  array  inside claims  (reclassified  from  strong  entity
+ClaimDocument)
+• status   history[] — embedded array inside claims (reclassified from strong entity
+ClaimStatusHistory)
+6.2  Entity 1:  PolicyHolder
+Description:  Represents registered customers.  Origin of the entire claim lifecycle.
+Collection Name: policyholders
+Attribute             Data Type     Key Type      Description
+id              String               Primary Key    Unique policyholder
+identifier
+name             String               —                         Full name
+dob              Date                 —                         Date of birth
+gender           String               —                         M / F / Other
+aadhaar no       String               Unique Key      National ID number
+phones           Array<String>—                         Embedded contact
+numbers array
+SSN College of Engineering   –  17
+----------------Page (17) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute             Data Type     Key Type      Description
+address.street   String               —                         Street (sub-document)
+address.city     String               —                         City (sub-document)
+address.state    String               —                         State (sub-document)
+address.pincode  String               —                         Pincode (sub-document)
+Listing 1.  PolicyHolder Document Example
+1
+  {
+2
+    "_id": "PH001",
+3
+    "name": "Arjun  Kumar",
+4
+    "dob":  ISODate("1990-05-12"),
+5
+    "gender": "M",
+6
+    "aadhaar_no":  "456789123456" ,
+7
+    "phones":  ["9876543210"] ,
+8
+    "address": {
+9
+      "street": "Anna  Nagar",
+10
+      "city": "Chennai",
+11
+      "state": "Tamil  Nadu",
+12
+      "pincode":  "600040"
+13
+    }
+14
+  }
+Design Note: phones[] replaces the relational PolicyHolderPhone table. address{}
+replaces the BCNF-decomposed Location table.  Both are stored natively within the
+document, eliminating joins.
+6.3  Entity 2:  Branch
+Description:  Regional offices of the insurance company.  Enables regional reporting and
+accountability.
+Collection Name: branches
+Attribute             Data Type     Key Type      Description
+id              String               Primary Key    Unique branch identifier
+branch name      String               —                         Full name of branch
+location         String               —                         City / location
+manager name     String               —                         Branch manager name
+contact          String               —                         Branch contact number
+Listing 2.  Branch Document Example
+1
+  {
+2
+    "_id": "B101",
+SSN College of Engineering   –  18
+----------------Page (18) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+3
+    "branch_name": "Chennai  Central  Branch",
+4
+    "location": "Chennai",
+5
+    "manager_name": "R. Kumar",
+6
+    "contact":  "04424567890"
+7
+  }
+6.4  Entity 3:  Event (Policy Type Classifier)
+Description: Universal policy type classification mechanism.  Also triggers claims.  Elim-
+inates subclass tables.
+Collection Name: events
+Attribute                 Data Type     Key Type      Description
+id                 String               Primary Key    Unique event identifier
+event name          String               —                         Insurance event/type name
+event description   String               —                         Description of coverage
+scope
+risk level          String               —                         Medium / High / Very
+High
+Listing 3.  Event Document Example
+1
+  {
+2
+    "_id": "E101",
+3
+    "event_name": "Medical  Treatment",
+4
+    "event_description": "Hospitalization , surgeries , medical  bills",
+5
+    "risk_level": "Medium"
+6
+  }
+All six insurance product types managed through this single collection:
+EventIDEvent Name     Policy Type       Description      Risk
+E101      Medical
+Treatment
+Medical Policy       Hospitalisation,
+surgery
+Medium
+E102      Vehicle
+Accident
+Vehicle Policy        Road
+accidents,
+damage
+High
+E103      Fire Damage        Property Policy     Fire to
+property
+High
+E104      Natural
+Disaster
+Disaster Policy      Flood,
+earthquake
+Very High
+E105      Life Insurance      Life Policy             Death benefit       High
+SSN College of Engineering   –  19
+----------------Page (19) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+EventIDEvent Name     Policy Type       Description      Risk
+E106      Theft                    Theft Policy           Theft of
+insured
+property
+Medium
+Design Note: Event participates in two relationships — CATEGORIZES with Policy
+and TRIGGERS with Claim.  Both Policy and Claim carry event                                                    id as a reference
+key, allowing the insurance product type to be determined from either direction.
+6.5  Entity 4:  Policy
+Description: Insurance agreements issued to policyholders through a branch, categorised
+by an event type.
+Collection Name: policies
+Attribute             Data Type     Key Type      Description
+id              String               Primary Key    Unique policy identifier
+policy number    String               Unique Key      Human-readable policy
+number
+premium amount   Decimal            —                         Monthly/annual premium
+coverage amount  Decimal            —                         Maximum coverage amount
+start date       Date                 —                         Policy start date
+end date         Date                 —                         Policy end date
+policy holder id String               Reference
+Key
+→ policyholders.   id
+branch id        String               Reference
+Key
+→ branches.   id
+event id         String               Reference
+Key
+→ events.   id
+Listing 4.  Policy Document Example
+1
+  {
+2
+    "_id": "P201",
+3
+    "policy_number": "POL1001",
+4
+    "premium_amount": 12000,
+5
+    "coverage_amount": 500000,
+6
+    "start_date":  ISODate("2024-01-01"),
+7
+    "end_date":  ISODate("2025-01-01"),
+8
+    "policy_holder_id": "PH001",
+9
+    "branch_id": "B101",
+10
+    "event_id": "E101"
+SSN College of Engineering   –  20
+----------------Page (20) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+11
+  }
+6.6  Entity 5:  ServiceProvider
+Description:  Third-party organisations handling claims (hospitals, garages, inspection
+firms).
+Collection Name: service                  providers
+Attribute                 Data Type     Key Type      Description
+id                 String               Primary Key    Unique provider identifier
+provider name       String               —                         Name of service provider
+provider type       String               —                         Hospital / Garage /
+Inspection
+address.street      String               —                         Street (sub-document)
+address.city        String               —                         City (sub-document)
+address.state       String               —                         State (sub-document)
+phone               String               —                         Contact number
+license no          String               Unique Key      Professional licence number
+recommended amount  Decimal            —                         Recommended settlement
+amount
+remarks             String               —                         Notes on provider
+Listing 5.  ServiceProvider Document Example
+1
+  {
+2
+    "_id": "SP301",
+3
+    "provider_name": "Apollo  Hospital",
+4
+    "provider_type": "Hospital",
+5
+    "address": { "street": "Greams  Road", "city": "Chennai",
+6
+                    "state": "Tamil  Nadu", "pincode":  "600006" },
+7
+    "phone":  "04428293333" ,
+8
+    "license_no": "HOSP001",
+9
+    "recommended_amount": 115000,
+10
+    "remarks": "Verified  hospital  for  medical  claims"
+11
+  }
+6.7  Entity 6:  Claim (with Embedded Documents and Status History)
+Description:  Central transactional document.  Embeds ClaimDocument and ClaimSta-
+tusHistory arrays.  Carries EventID directly as it is triggered by an event.
+Collection Name: claims
+SSN College of Engineering   –  21
+----------------Page (21) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute             Data Type     Key Type      Description
+id              String               Primary Key    Unique claim identifier
+claim number     String               Unique Key      Human-readable claim
+reference
+claim date       Date                 —                         Date claim was filed
+claim amount     Decimal            —                         Amount claimed
+claim status     String               —                         Current workflow status
+event id         String               Reference
+Key
+→ events.   id
+(TRIGGERS)
+policy id        String               Reference
+Key
+→ policies.   id
+provider id      String               Reference
+Key
+→ service   providers. id
+documents[]      Array<Doc>Embedded        Supporting claim
+documents
+status history[] Array<Doc>Embedded        Status transition audit trail
+Embedded Entity:  ClaimDocument (inside claims.documents[])
+Design  Note:  In  the  ER  model,  ClaimDocument  is  a strong entity  with  its  own
+DocumentID  as  primary  key  and  ClaimID  as  foreign  key.   In  the  NoSQL  design,
+because  ClaimDocument  is  always  accessed  in  the  context  of  its  parent  claim  and
+has  no  independent  lifecycle,  it  is  stored  as  an  embedded  array  within  the  Claim
+document.  DocumentID is retained as a unique identifier within the array.
+Attribute             Data Type     Key Type      Description
+document id      String               Unique
+within Claim
+Document identifier
+file path        String               —                         File storage path
+document type    String               —                         Medical Report / Bill /
+Photo
+upload date      Date                 —                         Date uploaded
+Embedded Entity:  ClaimStatusHistory (inside claims.status                                              history[])
+Design  Note:   In  the  ER  model,  ClaimStatusHistory  is  a  strong  entity  with  its
+own  StatusID  as  primary  key.   In  the  NoSQL  design,  it  is  stored  as  an  embedded
+append-only array within the Claim document, providing a built-in audit trail without
+requiring a separate collection lookup.
+SSN College of Engineering   –  22
+----------------Page (22) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Attribute             Data Type     Key Type      Description
+status id        String               Unique
+within Claim
+Status entry identifier
+status           String               —                         Submitted / Under Review
+/ Approved / Rejected
+status date      Date                 —                         Date of this status
+transition
+updated by       String               —                         System / Surveyor /
+Manager
+Listing 6.  Claim Document with Embedded Arrays
+1
+  {
+2
+    "_id": "C401",
+3
+    "claim_number": "CLM5001",
+4
+    "claim_date":  ISODate("2024-07-05"),
+5
+    "claim_amount": 120000,
+6
+    "claim_status": "Approved",
+7
+    "event_id": "E101",
+8
+    "policy_id": "P201",
+9
+    "provider_id": "SP301",
+10
+    "documents": [
+11
+      { "document_id": "D01", "file_path": "/docs/medical_report.pdf",
+12
+         "document_type": "Medical  Report", "upload_date":  ISODate
+("2024-07-05") },
+13
+      { "document_id": "D02", "file_path": "/docs/hospital_bill.pdf",
+14
+         "document_type": "Hospital  Bill",   "upload_date":  ISODate
+("2024-07-05") }
+15
+    ],
+16
+    "status_history": [
+17
+      { "status_id": "ST801", "status": "Submitted",
+18
+         "status_date":  ISODate("2024-07-05"), "updated_by": "System"
+},
+19
+      { "status_id": "ST802", "status": "Under  Review",
+20
+         "status_date":  ISODate("2024-07-06"), "updated_by": "Surveyor"
+},
+21
+      { "status_id": "ST803", "status": "Approved",
+22
+         "status_date":  ISODate("2024-07-08"), "updated_by": "Manager"
+}
+23
+    ]
+24
+  }
+6.8  Entity 7:  Surveyor
+Description:  Authorised personnel responsible for claim verification and assessment.
+SSN College of Engineering   –  23
+----------------Page (23) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Collection Name: surveyors
+Attribute             Data Type     Key Type      Description
+id              String               Primary Key    Unique surveyor identifier
+name             String               —                         Full name of surveyor
+license no       String               Unique Key      Professional licence number
+phone            String               —                         Contact number
+Listing 7.  Surveyor Document Example
+1
+  {
+2
+    "_id": "S501",
+3
+    "name": "Rajesh  Sharma",
+4
+    "license_no": "LIC1001",
+5
+    "phone":  "9001122334"
+6
+  }
+6.9  Entity 8:  ClaimReview
+Description:  Review activity by a surveyor on a claim.  Resolves the M:N relationship
+between Claim and Surveyor.
+Collection Name: claim                  reviews
+Attribute                 Data Type     Key Type      Description
+id                 String               Primary Key    Unique review identifier
+claim id            String               Reference
+Key
+→ claims.   id
+surveyor id         String               Reference
+Key
+→ surveyors.   id
+review date         Date                 —                         Date of review
+recommended amount  Decimal            —                         Recommended settlement
+amount
+remarks             String               —                         Review comments
+Listing 8.  ClaimReview Document Example
+1
+  {
+2
+    "_id": "R601",
+3
+    "claim_id": "C401",
+4
+    "surveyor_id": "S501",
+5
+    "review_date":  ISODate("2024-07-06"),
+6
+    "recommended_amount": 115000,
+7
+    "remarks": "Medical  expenses  verified  and  validated"
+8
+  }
+SSN College of Engineering   –  24
+----------------Page (24) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+6.10  Entity 9:  Payment
+Description:  Financial settlement for approved claims.  Stored separately for audit and
+financial traceability.
+Collection Name: payments
+Attribute                Data Type     Key Type      Description
+id                String               Primary Key    Unique payment identifier
+claim id           String               Reference
+Key
+→ claims.   id
+payment date       Date                 —                         Date of payment
+payment amount     Decimal            —                         Amount paid
+payment mode       String               —                         Bank Transfer / UPI /
+Cheque
+transaction ref no  String               Unique Key      Bank transaction reference
+Listing 9.  Payment Document Example
+1
+  {
+2
+    "_id": "PAY701",
+3
+    "claim_id": "C401",
+4
+    "payment_date":  ISODate("2024-07-10"),
+5
+    "payment_amount": 115000,
+6
+    "payment_mode": "Bank  Transfer",
+7
+    "transaction_ref_no": "TXN987654"
+8
+  }
+6.11  Summary of Entities and Storage
+Entity                    Type                  Storage Location
+PolicyHolder              Primary
+Collection
+policyholders
+Branch                       Primary
+Collection
+branches
+Event                         Primary
+Collection
+events
+Policy                         Primary
+Collection
+policies
+ServiceProvider          Primary
+Collection
+service providers
+SSN College of Engineering   –  25
+----------------Page (25) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Entity                    Type                  Storage Location
+Claim                         Primary
+Collection
+claims
+Surveyor                    Primary
+Collection
+surveyors
+ClaimReview              Primary
+Collection
+claim reviews
+Payment                    Primary
+Collection
+payments
+phones[]                     Embedded
+Array
+Inside policyholders
+address{}         Embedded
+Sub-doc
+Inside policyholders and
+service providers
+documents[]
+(ClaimDocument)
+Embedded
+Array
+Inside claims
+status history[]
+(ClaimStatusHis-
+tory)
+Embedded
+Array
+Inside claims
+6.12  Key Constraints Summary
+Key Type       Collection              Attribute / Reference
+Primary Key     All 9 collections           id field of each collection
+Unique Key       policyholders              aadhaar no
+Unique Key       policies                       policy number
+Unique Key       claims                        claim number
+Unique Key       surveyors                   license no
+Unique Key       service providers        license no
+Unique Key       payments                   transaction ref no
+Reference
+Key
+policies                       policy holder id→
+policyholders. id
+Reference
+Key
+policies                       branch id→ branches.      id
+Reference
+Key
+policies                       event id→ events.      id
+Reference
+Key
+claims                        event id→ events.      id
+(TRIGGERS)
+SSN College of Engineering   –  26
+----------------Page (26) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Key Type       Collection              Attribute / Reference
+Reference
+Key
+claims                        policy id→ policies.      id
+Reference
+Key
+claims                        provider id→
+service providers. id
+Reference
+Key
+claim reviews             claim id→ claims.      id
+Reference
+Key
+claim reviews             surveyor id→ surveyors.      id
+Reference
+Key
+payments                   claim id→ claims.      id
+7.  Relationships with Types, Implementation, and Participation
+7.1  PolicyHolder – Policy (HAS)
+Type:  1:N    Implementation:  Referenced (policy                                       holder id in policies)
+Participation:  PolicyHolder — Partial; Policy — Total.
+One policyholder owns multiple policies.  Each policy must belong to exactly one policy-
+holder.
+7.2  Branch – Policy (MANAGES)
+Type:  1:N    Implementation:  Referenced (branch                                       id in policies)
+Participation:  Branch — Partial; Policy — Total.
+One branch manages multiple policies.  Each policy is issued by exactly one branch.
+7.3  Event – Policy (CATEGORIZES)
+Type:  1:N    Implementation:  Referenced (event                                       id in policies)
+Participation:  Event — Partial; Policy — Total.
+One event type categorises multiple policies.  This is the core mechanism that eliminates
+subclass tables.
+7.4  Policy – Claim (FILES)
+Type:  1:N    Implementation:  Referenced (policy                                       id in claims)
+Participation:  Policy — Partial; Claim — Total.
+One policy can have multiple claims filed against it.  Each claim must reference a valid
+policy.
+SSN College of Engineering   –  27
+----------------Page (27) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+7.5  Claim – ServiceProvider (HANDLES)
+Type:  N:1    Implementation:  Referenced (provider                                       id in claims)
+Participation:  Claim — Total; ServiceProvider — Partial.
+Each claim is handled by one service provider. A provider may handle claims from multiple
+policyholders.
+7.6  Event – Claim (TRIGGERS)
+Type:  1:N    Implementation:  Referenced (event                                       id in claims)
+Participation:  Event — Partial; Claim — Total.
+Each  claim  is  triggered  by  exactly  one  event  type.   This  allows  the  claim  to  carry  its
+insurance category directly without joining through Policy.
+7.7  Claim – ClaimDocument (HAS        DOCUMENT)
+Type:  1:N    Implementation:  Embedded (documents[] array in claims)
+Participation:  Claim — Partial; ClaimDocument — Total.
+One claim has multiple supporting documents.  Embedded because documents are always
+accessed with their claim and are bounded in size.
+7.8  Claim – ClaimStatusHistory (HAS        HISTORY)
+Type:  1:N    Implementation:  Embedded (status                                       history[] array in claims)
+Participation:  Both — Total.
+One claim has multiple status transitions forming an append-only audit trail.  Embedded
+for atomic status updates.
+7.9  Claim – ClaimReview (REVIEWED        BY)
+Type:  1:N    Implementation:  Referenced (claim                                       id in claim     reviews)
+Participation:  Claim — Partial; ClaimReview — Total.
+One claim can be reviewed multiple times by different surveyors.
+7.10  Surveyor – ClaimReview (PERFORMS)
+Type:  1:N    Implementation:  Referenced (surveyor                                       id in claim     reviews)
+Participation:  Surveyor — Partial; ClaimReview — Total.
+One surveyor performs reviews on multiple claims.
+7.11  Claim – Payment (SETTLED          BY)
+Type:  1:1    Implementation:  Referenced (claim                                       id in payments)
+Participation:  Claim — Partial; Payment — Total.
+An approved claim is settled by exactly one payment.  Not all claims result in payment.
+7.12  Final Relationship Summary Table
+SSN College of Engineering   –  28
+----------------Page (28) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Relationship          Entities          Type    ImplementationParticipation
+HAS                           PolicyHolder
+– Policy
+1:N         Referenced        PH Partial; Policy
+Total
+MANAGES                Branch –
+Policy
+1:N         Referenced        Branch Partial;
+Policy Total
+CATEGORIZES        Event –
+Policy
+1:N         Referenced        Event Partial; Policy
+Total
+FILES                        Policy –
+Claim
+1:N         Referenced        Policy Partial; Claim
+Total
+HANDLES                 Claim – Ser-
+viceProvider
+N:1         Referenced        Claim Total; SP
+Partial
+TRIGGERS               Event –
+Claim
+1:N         Referenced        Event Partial; Claim
+Total
+HAS DOCUMENT    Claim –
+ClaimDocu-
+ment
+1:N         Embedded
+Array
+Claim Partial; Doc
+Total
+HAS HISTORY         Claim –
+StatusHistory
+1:N         Embedded
+Array
+Both Total
+REVIEWED BY       Claim –
+ClaimReview
+1:N         Referenced        Claim Partial; Review
+Total
+PERFORMS              Surveyor –
+ClaimReview
+1:N         Referenced        Surveyor Partial;
+Review Total
+SETTLED BY           Claim –
+Payment
+1:1          Referenced        Claim Partial;
+Payment Total
+8.  Assignment 1
+8.1  (a) Identify Entities, Attributes, and Relationships
+Identified Collections (Entities) and Key Attributes
+Collection          Key Attributes
+policyholders           id, name, dob, gender, aadhaar  no, phones[],
+address{}
+branches                 id, branch name, location, manager  name,
+contact
+events                     id, event name, event description, risk level
+SSN College of Engineering   –  29
+----------------Page (29) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Collection          Key Attributes
+policies                    id, policy  number, premium amount,
+coverage amount, start date, end date,
+policy holder id, branch id, event id
+service providers     id, provider name, provider type, address{},
+phone, license no, recommended amount, remarks
+claims                     id, claim number, claim date, claim amount,
+claim status, event id, policy  id, provider id,
+documents[], status history[]
+surveyors                id, name, license  no, phone
+claim reviews          id, claim id, surveyor id, review date,
+recommended amount, remarks
+payments                id, claim id, payment date, payment amount,
+payment mode, transaction  ref no
+Relationships with Cardinality and Participation
+Relationship            Entities          CardinalityParticipation
+HAS                              PolicyHolder
+– Policy
+1:N           PolicyHolder Partial, Policy
+Total
+MANAGES                  Branch –
+Policy
+1:N           Branch Partial, Policy Total
+CATEGORIZES          Event –
+Policy
+1:N           Event Partial, Policy Total
+FILES                           Policy –
+Claim
+1:N           Policy Partial, Claim Total
+HANDLES                   Claim – Ser-
+viceProvider
+N:1           Claim Total, SP Partial
+TRIGGERS                  Event –
+Claim
+1:N           Event Partial, Claim Total
+HAS DOCUMENT      Claim –
+ClaimDocu-
+ment
+1:N           Claim Partial, Document
+Total
+HAS HISTORY           Claim –
+StatusHistory
+1:N           Both Total
+REVIEWED BY          Claim –
+ClaimReview
+1:N           Claim Partial, Review Total
+SSN College of Engineering   –  30
+----------------Page (30) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Relationship            Entities          CardinalityParticipation
+PERFORMS                Surveyor –
+ClaimReview
+1:N           Surveyor Partial, Review
+Total
+SETTLED BY             Claim –
+Payment
+1:1            Claim Partial, Payment Total
+Data Grouping and Embedding
+Embedded inside policyholders:
+• phones[] — multivalued attribute
+• address{} — composite attribute
+Embedded inside claims:
+• documents[] — ClaimDocument (strong entity in ER model; embedded in NoSQL
+for performance)
+• status   history[] — ClaimStatusHistory (strong entity in ER model;  embedded
+in NoSQL for audit trail)
+Referenced (separate collections):
+•  All other entities are maintained as independent collections referenced by ID
+SSN College of Engineering   –  31
+----------------Page (31) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+8.2  (b) Conceptual Diagram (NoSQL High-Level Model)
+Figure 2.  Conceptual NoSQL High-Level Model for ICPS
+SSN College of Engineering   –  32
+----------------Page (32) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Logical and Structural MongoDB Model
+Figure 3.  Logical and Structural MongoDB Model for ICPS
+Collections Structure Summary
+Collection              Strategy         Justification
+policyholders              Reference          Shared across many policies;
+independent lifecycle
+branches                    Reference          Shared across many policies
+events                        Reference          Classification table; reused
+across policies and claims
+policies                       Reference          References PH, Branch, Event
+service providers        Reference          Shared across multiple claims
+claims                        Reference +
+Embed
+References Policy, SP, Event;
+embeds documents[] and
+status history[]
+surveyors                   Reference          Independent entity; shared
+across reviews
+claim reviews             Reference          References Claim and Surveyor
+payments                   Reference          Independent financial record;
+references Claim
+8.3  (c) Map to Physical Schema
+SSN College of Engineering   –  33
+----------------Page (33) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+PolicyHolders Collection Schema
+Listing 10.  Physical Schema:  policyholders
+1
+  {
+2
+    "_id": String ,            //  Primary  Key
+3
+    "name": String ,           //  Required
+4
+    "dob": Date ,               //  Required
+5
+    "gender": String ,         //  Required: M / F / Other
+6
+    "aadhaar_no": String ,    // Unique , Required
+7
+    "phones": [String],      //  Embedded  array
+8
+    "address": { "street": String , "city": String ,
+9
+                    "state": String , "pincode":  String }
+10
+  }
+Branches Collection Schema
+Listing 11.  Physical Schema:  branches
+1
+  {
+2
+    "_id": String , "branch_name": String , "location": String ,
+3
+    "manager_name": String , "contact":  String
+4
+  }
+Events Collection Schema
+Listing 12.  Physical Schema:  events
+1
+  {
+2
+    "_id": String , "event_name": String ,
+3
+    "event_description": String ,
+4
+    "risk_level":  String    //  Medium / High / Very  High
+5
+  }
+Policies Collection Schema
+Listing 13.  Physical Schema:  policies
+1
+  {
+2
+    "_id": String ,
+3
+    "policy_number": String ,       //  Unique
+4
+    "premium_amount": Decimal ,
+5
+    "coverage_amount": Decimal ,
+6
+    "start_date": Date , "end_date": Date ,
+7
+    "policy_holder_id": String ,    // FK -> policyholders._id
+8
+    "branch_id": String ,            // FK -> branches._id
+9
+    "event_id":  String               // FK -> events._id
+10
+  }
+SSN College of Engineering   –  34
+----------------Page (34) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Service Providers Collection Schema
+Listing 14.  Physical Schema:  service                      providers
+1
+  {
+2
+    "_id": String ,
+3
+    "provider_name": String , "provider_type": String ,
+4
+    "address": { "street": String , "city": String ,
+5
+                    "state": String , "pincode":  String },
+6
+    "phone": String ,
+7
+    "license_no": String ,           //  Unique
+8
+    "recommended_amount": Decimal ,
+9
+    "remarks":  String
+10
+  }
+Claims Collection Schema
+Listing 15.  Physical Schema:  claims
+1
+  {
+2
+    "_id": String ,
+3
+    "claim_number": String ,         //  Unique
+4
+    "claim_date": Date ,
+5
+    "claim_amount": Decimal ,
+6
+    "claim_status": String ,         //  Submitted/Under  Review/Approved/
+Rejected
+7
+    "event_id": String ,             // FK -> events._id   (TRIGGERS
+relationship)
+8
+    "policy_id": String ,            // FK -> policies._id
+9
+    "provider_id": String ,          // FK -> service_providers._id
+10
+    "documents": [
+11
+      { "document_id": String , "file_path": String ,
+12
+         "document_type": String , "upload_date": Date }
+13
+    ],
+14
+    "status_history": [
+15
+      { "status_id": String , "status": String ,
+16
+         "status_date": Date , "updated_by":  String }
+17
+    ]
+18
+  }
+Surveyors Collection Schema
+Listing 16.  Physical Schema:  surveyors
+1
+  {
+2
+    "_id": String , "name": String ,
+3
+    "license_no": String ,    //  Unique
+4
+    "phone":  String
+SSN College of Engineering   –  35
+----------------Page (35) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+5
+  }
+ClaimReviews Collection Schema
+Listing 17.  Physical Schema:  claim                      reviews
+1
+  {
+2
+    "_id": String ,
+3
+    "claim_id": String ,                // FK -> claims._id
+4
+    "surveyor_id": String ,            // FK -> surveyors._id
+5
+    "review_date": Date ,
+6
+    "recommended_amount": Decimal ,
+7
+    "remarks":  String
+8
+  }
+Payments Collection Schema
+Listing 18.  Physical Schema:  payments
+1
+  {
+2
+    "_id": String ,
+3
+    "claim_id": String ,               // FK -> claims._id
+4
+    "payment_date": Date ,
+5
+    "payment_amount": Decimal ,
+6
+    "payment_mode": String ,
+7
+    "transaction_ref_no":  String    //  Unique
+8
+  }
+Partition Key and Indexes
+•  Partition Key: claims.               id
+•  Indexes: aadhaar           no  (unique), policy            number  (unique), claim                number  (unique),
+license no×2 (unique), transaction               ref no (unique)
+•  Non-unique indexes: policy                    holder id, branch    id, event    id (policies), event            id
+(claims), policy         id, claim    status, provider        id, claim    id×2, surveyor       id
+8.4  (d) Functional Dependencies, Query Patterns, and Key Identification
+Primary Keys
+•  All 9 collections:     id is the primary key
+Unique Keys
+• policyholders.aadhaar   no, policies.policy    number, claims.claim        number
+• surveyors.license   no, service    providers.license no,
+payments.transaction ref no
+SSN College of Engineering   –  36
+----------------Page (36) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Functional Dependencies
+policy holder id→ name, dob, gender, aadhaar         no, phones, address
+aadhaar no→ policy      holder id
+branch id→ branch      name, location, manager   name, contact
+event id→ event      name, event  description, risk  level
+policy id→ policy      number, premium  amount, coverage  amount,
+start date, end  date, policy  holder id,
+branch id, event  id
+policy number→ policy          id
+provider id→ provider      name, provider  type, address,
+phone, license  no, recommended  amount, remarks
+license no (SP)→ provider           id
+claim id→ claim      number, claim  date, claim  amount,
+claim status, event  id, policy  id,
+provider id, documents[], status   history[]
+claim number→ claim          id
+surveyor id→ name, license       no, phone
+license no (Sur)→ surveyor            id
+review id→ claim      id, surveyor  id, review  date,
+recommended amount, remarks
+payment id→ claim      id, payment  date, payment  amount,
+payment mode, transaction  ref no
+transaction ref no→ payment      id
+Query Patterns
+Listing 19.  Retrieve complete claim with embedded docs and history
+1
+  db.claims.findOne({ _id: "C401" })
+Listing 20.  All claims for a policy
+1
+  db.claims.find({  policy_id: "P201" })
+Listing 21.  All policies by a policyholder
+SSN College of Engineering   –  37
+----------------Page (37) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+1
+  db.policies.find({  policy_holder_id: "PH001" })
+Listing 22.  All Medical policies by event type
+1
+  db.policies.find({  event_id: "E101" })
+Listing 23.  All claims triggered by a specific event
+1
+  db.claims.find({  event_id: "E101" })
+Listing 24.  All policies by branch
+1
+  db.policies.find({  branch_id: "B101" })
+Listing 25.  All pending claims
+1
+  db.claims.find({  claim_status: "Submitted" })
+Listing 26.  All reviews for a claim
+1
+  db.claim_reviews.find({  claim_id: "C401" })
+Listing 27.  Payment for a claim
+1
+  db.payments.findOne({  claim_id: "C401" })
+Embedding vs Referencing Justification
+Embedded:
+• documents[] and status                  history[] in claims — always accessed with the claim;
+bounded in size; no independent access pattern; enables single-query retrieval.
+• phones[] in policyholders — multivalued; always with policyholder; eliminates re-
+lational table.
+• address{} in policyholders and service                       providers — composite; not shared; elimi-
+nates Location table.
+Referenced:
+• policy   holder id, branch    id, event    id in policies — shared entities; avoid dupli-
+cation.
+• event   id, policy    id, provider    id in claims — independent lifecycles; shared en-
+tities.
+• surveyor   id in claim     reviews — surveyor exists independently; reviews many claims.
+• claim   id in payments — independent financial record.
+SSN College of Engineering   –  38
+----------------Page (38) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Denormalisation Trade-off
+claim status  is  stored  both  as  a  direct  field  (fast  lookup)  and  as  the  latest  entry  in
+status history[] (audit trail).  Updates must maintain both atomically using a single
+updateOne() with$set and$push.  Acceptable in NoSQL for read performance gains.
+Final NoSQL Architecture Summary
+Collection          Embedded
+Entities
+References
+policyholders         phones[], address{}         —
+branches                —                                  —
+events                    —                                  —
+policies                   —                                  policy holder id, branch id,
+event id
+service providers    address{}         —
+claims                    documents[],
+status history[]
+event id, policy  id, provider id
+surveyors               —                                  —
+claim reviews         —                                  claim id, surveyor id
+payments               —                                  claim id
+9.  Functional Dependencies and Key Identification
+9.1  Introduction
+A functional dependencyX →Y  states that values ofX  uniquely determine values of
+Y .  FDs help identify candidate keys, eliminate redundancy, and ensure data consistency.
+In the NoSQL model, embedded arrays derive their identity from the parent document’s
+primary key and carry no independent FDs.
+9.2  Functional Dependencies per Collection
+PolicyHolder
+policy holder id→ name, dob, gender, aadhaar                       no, phones, address
+aadhaar no→ policy      holder id
+Branch
+branch id→ branch      name, location, manager                name, contact
+SSN College of Engineering   –  39
+----------------Page (39) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Event
+event id→ event      name, event      description, risk             level
+Policy
+policy id→ policy      number, premium        amount, coverage        amount,
+start date, end      date, policy      holder id,
+branch id, event    id
+policy number→ policy          id
+ServiceProvider
+provider id→ provider      name, provider      type, address,
+phone, license       no, recommended    amount, remarks
+license no (SP)→ provider           id
+Claim
+claim id→ claim      number, claim        date, claim      amount,
+claim status, event        id, policy    id, provider    id
+claim number→ claim          id
+Surveyor
+surveyor id→ name, license           no, phone
+license no (Sur)→ surveyor            id
+ClaimReview
+review id→ claim      id, surveyor    id, review    date,
+recommended amount, remarks
+Payment
+payment id→ claim      id, payment    date, payment      amount,
+payment mode, transaction      ref no
+transaction ref no→ payment      id
+SSN College of Engineering   –  40
+----------------Page (40) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+9.3  Derivation of Minimal Cover
+Step 1:  Decompose RHS to single attributes.  Already done above.
+Step  2:   Remove  extraneous  LHS  attributes.   All  LHS  are  single  attributes
+(primary keys); none are extraneous.
+Step 3:  Remove redundant dependencies.
+• aadhaar   no→ policy      holder id and policy       holder id→X makes direct
+aadhaar no→X redundant.
+• policy   number → policy          id  and policy       id →X  makes policy               number →X
+(for non-keyX) redundant.
+•  Similarly for claim              number, license        no (both), and transaction              ref no.
+Final Minimal Cover
+policy holder id→ name, dob, gender, aadhaar                       no, phones, address
+aadhaar no→ policy      holder id
+branch id→ branch      name, location, manager                name, contact
+event id→ event      name, event      description, risk             level
+policy id→ policy      number, premium        amount, coverage        amount,
+start date, end      date, policy      holder id,
+branch id, event    id
+policy number→ policy          id
+provider id→ provider      name, provider      type, address,
+phone, license       no, recommended    amount, remarks
+license no (SP)→ provider           id
+claim id→ claim      number, claim        date, claim      amount,
+claim status, event        id, policy    id, provider    id
+claim number→ claim          id
+surveyor id→ name, license           no, phone
+license no (Sur)→ surveyor            id
+review id→ claim      id, surveyor    id, review    date,
+recommended amount, remarks
+payment id→ claim      id, payment    date, payment      amount,
+payment mode, transaction      ref no
+transaction ref no→ payment      id
+SSN College of Engineering   –  41
+----------------Page (41) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+9.4  Key Identification
+Collection            Candidate Keys             Primary Key Chosen
+policyholders           policy holder id,
+aadhaar no
+policy holder id
+branches                  branch id              branch id
+events                      event id               event id
+policies                    policy id,
+policy number
+policy id
+service providers     provider id,
+license no
+provider id
+claims                      claim id, claim    number  claim id
+surveyors                 surveyor id,
+license no
+surveyor id
+claim reviews          review id              review id
+payments                 payment id,
+transaction ref no
+payment id
+10.  Assignment 2:  Optimised NoSQL Database Schema Design
+10.1  Objective of Schema Optimisation
+The objective is to optimise the ICPS database for high read performance, efficient query
+execution,  horizontal  scalability,  and  reduced  operations  per  claim  lookup  while  main-
+taining data consistency.
+10.2  Frequently Executed Query Patterns
+Query                                Frequency  Optimisation Strategy
+Retrieve claim with
+documents and history
+Very High     Embed documents[] and
+status history[]
+All claims for a policy             Very High     Index: claims.policy       id
+All policies by policyholder     Very High     Index:
+policies.policy holder id
+All claims by event type          High              Index: claims.event       id
+Policies by event type             High              Index: policies.event       id
+Policies by branch                   High              Index: policies.branch       id
+Pending / under-review
+claims
+High              Index:
+claims.claim status
+SSN College of Engineering   –  42
+----------------Page (42) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Query                                Frequency  Optimisation Strategy
+Payment for a claim                Moderate      Index: payments.claim       id
+Reviews for a claim                 Moderate      Index:
+claim reviews.claim id
+10.3  Optimised Claims Collection Schema
+Listing 28.  Optimised claims Collection Schema
+1
+  {
+2
+    "_id": String ,
+3
+    "claim_number": String ,      //  Unique  index
+4
+    "claim_date": Date ,
+5
+    "claim_amount": Decimal ,
+6
+    "claim_status": String ,      //  Indexed
+7
+    "event_id": String ,           //  Indexed  - TRIGGERS  relationship
+8
+    "policy_id": String ,          //  Indexed
+9
+    "provider_id": String ,       //  Indexed
+10
+    "documents": [                 //  Embedded  - strong  entity
+ClaimDocument
+11
+      { "document_id": String , "file_path": String ,
+12
+         "document_type": String , "upload_date": Date }
+13
+    ],
+14
+    "status_history": [           //  Embedded  - strong  entity
+ClaimStatusHistory
+15
+      { "status_id": String , "status": String ,
+16
+         "status_date": Date , "updated_by":  String }
+17
+    ]
+18
+  }
+10.4  Embedding vs Referencing Optimisation Decisions
+Embedded Data
+Embedded Entity      Reason
+documents[] in
+claims
+Always with claim; no independent access;
+bounded size
+status history[] in
+claims
+Append-only audit trail; always with claim
+phones[] in
+policyholders
+Multivalued; always with policyholder
+address{} in
+policyholders
+Composite; not shared
+SSN College of Engineering   –  43
+----------------Page (43) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Embedded Entity      Reason
+address{} in
+service providers
+Not shared across documents
+Referenced Data
+Reference                      Reason
+policy holder id in
+policies
+Shared; avoid duplication
+branch id in policies              One branch manages many policies
+event id in policies                Universal classifier; shared
+event id in claims                 TRIGGERS relationship; event
+independent of claim
+policy id in claims               One policy generates many claims
+provider id in claims            Independent entity; shared across claims
+surveyor id in
+claim reviews
+Independent; shared across reviews
+claim id in payments            Independent financial record
+10.5  Denormalisation Strategy
+claim status is stored as a direct field (fast current status lookup) and as the latest entry
+in status   history[] (full history).  Updated atomically with a single updateOne() using
+$set and$push.
+10.6  Index Optimisation
+Listing 29.  Index Creation Commands for All ICPS Collections
+1
+  //  PolicyHolders
+2
+  db.policyholders.createIndex({  aadhaar_no: 1 }, { unique: true })
+3
+4
+  //  Policies
+5
+  db.policies.createIndex({  policy_number: 1 }, { unique: true })
+6
+  db.policies.createIndex({  policy_holder_id: 1 })
+7
+  db.policies.createIndex({  branch_id: 1 })
+8
+  db.policies.createIndex({  event_id: 1 })
+9
+10
+  //  Claims
+11
+  db.claims.createIndex({  claim_number: 1 }, { unique: true })
+12
+  db.claims.createIndex({  event_id: 1 })
+13
+  db.claims.createIndex({  policy_id: 1 })
+14
+  db.claims.createIndex({  claim_status: 1 })
+15
+  db.claims.createIndex({  provider_id: 1 })
+SSN College of Engineering   –  44
+----------------Page (44) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+16
+17
+  //  ClaimReviews
+18
+  db.claim_reviews.createIndex({  claim_id: 1 })
+19
+  db.claim_reviews.createIndex({  surveyor_id: 1 })
+20
+21
+  //  Payments
+22
+  db.payments.createIndex({  transaction_ref_no: 1 }, { unique: true })
+23
+  db.payments.createIndex({  claim_id: 1 })
+24
+25
+  //  Surveyors
+26
+  db.surveyors.createIndex({  license_no: 1 }, { unique: true })
+27
+28
+  //  ServiceProviders
+29
+  db.service_providers.createIndex({  license_no: 1 }, { unique: true
+})
+10.7  Partition Key and Scalability
+Partition Key:    claims.                   id
+Justification:           Uniform distribution; each claim is self-contained
+with embedded sub-entities
+Shard
+Command:
+sh.shardCollection("icps.claims", {                  id:  1
+})
+10.8  Performance Optimisation Benefits
+•  Single-query retrieval:  Complete claim with all documents and history in one
+findOne().
+•  Reduced latency:  Strategic indexes minimise collection scans.
+•  Horizontal scalability:  Sharding on claim                                   id distributes load uniformly.
+•  Efficient writes:$push for appending documents and status entries is O(1).
+•  Flexible expansion:  New insurance types require one new Event document only.
+10.9  Data Consistency Considerations
+•  MongoDB document-level atomicity ensures claim                                        status update and
+status history[] push happen atomically.
+•  Reference IDs enforce referential integrity at application level.
+•  Unique indexes enforce business-critical field uniqueness.
+10.10  Final Optimised Schema Architecture Summary
+SSN College of Engineering   –  45
+----------------Page (45) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Collection          Embedded
+Entities
+References
+policyholders         phones[], address{}         —
+branches                —                                  —
+events                    —                                  —
+policies                   —                                  policy holder id, branch id,
+event id
+service providers    address{}         —
+claims                    documents[],
+status history[]
+event id, policy  id, provider id
+surveyors               —                                  —
+claim reviews         —                                  claim id, surveyor id
+payments               —                                  claim id
+11.  Implementation Details
+11.1  Collection Initialisation
+Listing 30.  Creating All ICPS Collections
+1
+  db.createCollection("policyholders")
+2
+  db.createCollection("branches")
+3
+  db.createCollection("events")
+4
+  db.createCollection("policies")
+5
+  db.createCollection("service_providers")
+6
+  db.createCollection("claims")
+7
+  db.createCollection("surveyors")
+8
+  db.createCollection("claim_reviews")
+9
+  db.createCollection("payments")
+11.2  Sample CRUD Operations
+Create Operations
+Listing 31.  Register a PolicyHolder
+1
+  db.policyholders.insertOne({
+2
+    _id: "PH001", name: "Arjun  Kumar",
+3
+    dob: new  Date("1990-05-12"), gender: "M",
+4
+    aadhaar_no: "456789123456" ,
+5
+    phones: ["9876543210"] ,
+6
+    address: { street: "Anna  Nagar", city: "Chennai",
+7
+                 state: "Tamil  Nadu", pincode: "600040" }
+8
+  })
+SSN College of Engineering   –  46
+----------------Page (46) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Listing 32.  Create a Policy
+1
+  db.policies.insertOne({
+2
+    _id: "P201", policy_number: "POL1001",
+3
+    premium_amount: 12000,  coverage_amount: 500000,
+4
+    start_date: new  Date("2024-01-01"),
+5
+    end_date: new  Date("2025-01-01"),
+6
+    policy_holder_id: "PH001",
+7
+    branch_id: "B101",
+8
+    event_id: "E101"
+9
+  })
+Listing 33.  Submit a Claim with Initial Status History
+1
+  db.claims.insertOne({
+2
+    _id: "C401", claim_number: "CLM5001",
+3
+    claim_date: new  Date("2024-07-05"),
+4
+    claim_amount: 120000,  claim_status: "Submitted",
+5
+    event_id: "E101",
+6
+    policy_id: "P201",
+7
+    provider_id: "SP301",
+8
+    documents: [],
+9
+    status_history: [{
+10
+       status_id: "ST801", status: "Submitted",
+11
+       status_date: new  Date("2024-07-05"), updated_by: "System"
+12
+    }]
+13
+  })
+Listing 34.  Add a Document to a Claim
+1
+  db.claims.updateOne(
+2
+    { _id: "C401" },
+3
+    {$push: { documents: {
+4
+       document_id: "D01",
+5
+       file_path: "/docs/medical_report.pdf",
+6
+       document_type: "Medical  Report",
+7
+       upload_date: new  Date("2024-07-05")
+8
+    }}}
+9
+  )
+Listing 35.  Record a Claim Review
+1
+  db.claim_reviews.insertOne({
+2
+    _id: "R601", claim_id: "C401", surveyor_id: "S501",
+3
+    review_date: new  Date("2024-07-06"),
+4
+    recommended_amount: 115000,
+5
+    remarks: "Medical  expenses  verified"
+6
+  })
+SSN College of Engineering   –  47
+----------------Page (47) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Listing 36.  Process a Payment
+1
+  db.payments.insertOne({
+2
+    _id: "PAY701", claim_id: "C401",
+3
+    payment_date: new  Date("2024-07-10"),
+4
+    payment_amount: 115000,  payment_mode: "Bank  Transfer",
+5
+    transaction_ref_no: "TXN987654"
+6
+  })
+Read Operations
+Listing 37.  Retrieve Complete Claim
+1
+  db.claims.findOne({ _id: "C401" })
+Listing 38.  All Claims for a Policy
+1
+  db.claims.find({  policy_id: "P201" })
+Listing 39.  All Claims Triggered by an Event
+1
+  db.claims.find({  event_id: "E101" })
+Listing 40.  All Pending Claims
+1
+  db.claims.find({  claim_status: "Submitted" })
+Update Operations
+Listing 41.  Update Claim Status and Append to History (Atomic)
+1
+  db.claims.updateOne(
+2
+    { _id: "C401" },
+3
+    {
+4
+$set:   { claim_status: "Approved" },
+5
+$push: { status_history: {
+6
+         status_id: "ST803", status: "Approved",
+7
+         status_date: new  Date("2024-07-08"), updated_by: "Manager"
+8
+      }}
+9
+    }
+10
+  )
+Listing 42.  Add a New Phone Number
+1
+  db.policyholders.updateOne(
+2
+    { _id: "PH001" },
+3
+    {$push: { phones: "9001122334" } }
+4
+  )
+SSN College of Engineering   –  48
+----------------Page (48) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+Delete Operations
+Listing 43.  Remove a Document from a Claim
+1
+  db.claims.updateOne(
+2
+    { _id: "C401" },
+3
+    {$pull: { documents: { document_id: "D01" } } }
+4
+  )
+Listing 44.  Delete a Rejected Claim
+1
+  db.claims.deleteOne({ _id: "C401", claim_status: "Rejected" })
+12.  Conclusion
+The redesigned NoSQL document-based schema for the Insurance Claim Processing Sys-
+tem (ICPS) successfully delivers the following outcomes:
+•  All  Strong  Entities:   The  updated  ER  design  models  all  entities  —  including
+ClaimDocument  and  ClaimStatusHistory  —  as  strong  entities  with  independent
+primary keys.  In the NoSQL implementation, these are embedded for performance
+while retaining their identifiers within the array.
+•  TRIGGERS  Relationship:   The  Event  entity  participates  in  both  CATEGO-
+RIZES (Policy) and TRIGGERS (Claim), allowing the insurance product type to
+be accessed directly from the Claim document via event                                          id without joining through
+Policy.
+•  Scalability:  Horizontal sharding via claims.                                  id handles high claim volumes.
+•  Flexibility: The Event-based classification supports all six insurance product types
+without schema migration.
+•  Performance:   Embedding  ClaimDocuments  and  StatusHistory  enables  single-
+query claim lifecycle retrieval.
+•  Data Integrity:  Primary keys, unique indexes, and reference IDs maintain consis-
+tency across all nine collections.
+•  Extensibility: New products, branches, and providers are added as new documents
+only.
+13.  Team Member Contributions
+Team Member 1:  M. Sujith (3122245001172)
+Tasks Completed:
+•  Designed the complete ER diagram with all strong entities including updated Claim-
+Document, ClaimStatusHistory, Branch, Event, and ServiceProvider.
+SSN College of Engineering   –  49
+----------------Page (49) Break----------------
+Insurance Claim Processing System             UCS3402 — Database Management Systems
+•  Established TRIGGERS relationship between Event and Claim.
+•  Defined  embedding  strategy  for documents[]  and status                                              history[]  within  the
+Claim collection.
+•  Documented all entity-relationship cardinalities and participation constraints for all
+11 relationships.
+•  Created the conceptual NoSQL high-level diagram.
+Team Member 2:  S. Sree Krishna (3122245001162)
+Tasks Completed:
+•  Designed MongoDB physical document schemas for all 9 collections with example
+documents.
+•  Added event         id to Claim collection to reflect TRIGGERS relationship.
+•  Documented embedding vs referencing decisions with full justification.
+•  Designed optimised schema architecture including index strategy and partition key.
+•  Prepared the logical and structural MongoDB model.
+•  Contributed to CRUD operations section and verified referential consistency.
+Team Member 3:  Sankar Shailesh (3122245001138)
+Tasks Completed:
+•  Updated functional dependencies per collection to reflect new entities and the TRIG-
+GERS relationship.
+•  Performed minimal cover derivation with removal of redundant dependencies.
+•  Derived candidate keys and primary keys for all 9 collections.
+•  Documented denormalisation strategy and trade-offs.
+•  Contributed to system specifications, constraints, and final report formatting.
+SSN College of Engineering   –  50
+----------------Page (50) Break----------------

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../lib/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
@@ -22,7 +23,7 @@ export default function ClaimDetail() {
   const { data: claim, isLoading } = useQuery({
     queryKey: ['claim', id],
     queryFn: async () => {
-      const res = await fetch(`/api/claims/${id}`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/api/claims/${id}`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch claim');
       return res.json();
     }
@@ -30,7 +31,7 @@ export default function ClaimDetail() {
 
   const updateStatus = async (newStatus: string) => {
     try {
-      const res = await fetch(`/api/claims/${id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/claims/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -46,7 +47,7 @@ export default function ClaimDetail() {
 
   const submitReview = async () => {
     try {
-      const res = await fetch(`/api/claim_reviews`, {
+      const res = await fetch(`${API_BASE_URL}/api/claim_reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -264,7 +265,7 @@ export default function ClaimDetail() {
             </div>
             <div className="modal-body" style={{ padding: '0', height: '70vh' }}>
               <iframe 
-                src={viewingDoc.file_path} 
+                src={viewingDoc.file_path.startsWith('http') ? viewingDoc.file_path : `${API_BASE_URL}${viewingDoc.file_path}`} 
                 style={{ width: '100%', height: '100%', border: 'none' }} 
                 title="Document viewer"
               />
