@@ -8,32 +8,32 @@
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🏢 Enterprise Design System
+###  Enterprise Design System
 - **Linear/Stripe Aesthetics**: A premium UI built with high-performance Vanilla CSS.
 - **Micro-interactions**: Smooth transitions and hover effects for a delightful user experience.
 - **Responsive Layout**: Designed for tablets and desktops, providing clarity at every resolution.
 
-### 🔐 Advanced RBAC (Role-Based Access Control)
+###  Advanced RBAC (Role-Based Access Control)
 - **Policyholder**: Smart claim filing wizard, real-time status tracking, and document management.
 - **Admin**: Strategic overview, system-wide analytics, and administrative management.
 - **Branch Manager**: Localized oversight and claim approvals.
 - **Surveyor**: On-ground assessment tools and recommendation engine.
 - **Service Provider**: Integration with hospitals/workshops for service verification.
 
-### 📄 Secure Document Management
+###  Secure Document Management
 - **MongoDB GridFS**: Industrial-strength storage for claim attachments (images, PDFs).
 - **Infinite Scalability**: Avoids file system limitations by storing binary data directly in the database.
 - **JWT-Protected Access**: Only authorized users can view sensitive documents.
 
-### 📊 Business Intelligence
+###  Business Intelligence
 - **Real-time Analytics**: Built-in Recharts integration for claim volume and approval metrics.
 - **Financial Precision**: Uses `Decimal128` for all currency calculations to prevent floating-point errors.
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technologies |
 | :--- | :--- |
@@ -44,7 +44,7 @@
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 Follow these steps to set up the project locally.
 
@@ -91,7 +91,7 @@ The application will be live at `http://localhost:5173`.
 
 ---
 
-## 🔑 Demo Access
+##  Demo Access
 
 Explore the system using these pre-configured credentials (password: `password`):
 
@@ -104,7 +104,7 @@ Explore the system using these pre-configured credentials (password: `password`)
 
 ---
 
-## 🏗️ Project Architecture
+##  Project Architecture
 
 ```text
 ├── client/              # React Frontend (Vite)
@@ -122,10 +122,9 @@ Explore the system using these pre-configured credentials (password: `password`)
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-*Handcrafted with care by [Sujith](https://github.com/sujith0613)*
