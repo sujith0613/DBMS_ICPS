@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+dist/
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Database
+mongodb_data/
+
+# IDE
+.vscode/
+.idea/
