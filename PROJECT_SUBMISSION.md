@@ -57,5 +57,5 @@ The project follows a decoupled **Client-Server Architecture**:
 
 ---
 
-**Submitted by:** Sujith
+
 **Repository:** [sujith0613/DBMS_ICPS](https://github.com/sujith0613/DBMS_ICPS)
