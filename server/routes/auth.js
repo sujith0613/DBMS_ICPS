@@ -23,9 +23,13 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(`DEBUG: Login attempt for ${email} from origin ${req.get('origin')}`);
+    
     const user = await User.findOne({ email });
+    console.log(`DEBUG: User found: ${user ? 'YES' : 'NO'}`);
     
     if (!user || user.password !== password) {
+      console.log(`DEBUG: Auth failed - invalid credentials`);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
