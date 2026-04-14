@@ -55,16 +55,17 @@ io.on('connection', (socket) => {
 // Middleware
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow local development
-    const allowedRoots = ['localhost', '127.0.0.1'];
-    const isLocal = !origin || allowedRoots.some(root => origin.includes(root));
-    const isVercel = origin && origin.endsWith('.vercel.app');
-    const isProductionUrl = origin === process.env.CLIENT_URL || (process.env.CLIENT_URL && origin === process.env.CLIENT_URL.replace(/\/$/, ""));
-
-    if (isLocal || isVercel || isProductionUrl) {
+    console.log(`CORS Check: Origin is [${origin}]`);
+    
+    const isLocal = !origin || origin.includes('localhost') || origin.includes('127.0.0.1');
+    const isVercel = origin && (origin.endsWith('.vercel.app') || origin.includes('vercel.app'));
+    
+    if (isLocal || isVercel) {
+      console.log('CORS Check: ALLOWED');
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('CORS Check: BLOCKED');
+      callback(null, false);
     }
   },
   credentials: true
