@@ -30,7 +30,13 @@ const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/,
 
 const io = new Server(server, {
   cors: {
-    origin: [clientUrl, 'http://localhost:5173'],
+    origin: function (origin, callback) {
+        if (!origin || origin.includes('localhost') || origin.endsWith('.vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(null, false);
+        }
+    },
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -47,10 +53,20 @@ io.on('connection', (socket) => {
 });
 
 // Middleware
-const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : 'http://localhost:5173';
-
 app.use(cors({
-  origin: [clientUrl, 'https://' + clientUrl.split('//')[1], 'http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: function (origin, callback) {
+    // Allow local development
+    const allowedRoots = ['localhost', '127.0.0.1'];
+    const isLocal = !origin || allowedRoots.some(root => origin.includes(root));
+    const isVercel = origin && origin.endsWith('.vercel.app');
+    const isProductionUrl = origin === process.env.CLIENT_URL || (process.env.CLIENT_URL && origin === process.env.CLIENT_URL.replace(/\/$/, ""));
+
+    if (isLocal || isVercel || isProductionUrl) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
