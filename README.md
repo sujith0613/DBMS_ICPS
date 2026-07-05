@@ -1,6 +1,7 @@
 # ICPS Enterprise | Insurance Claim Processing System
 
-[![Live Demo](https://img.shields.io/badge/Demo-Live_on_Vercel-success.svg)](https://dbms-icps-18366885i-sujithms-projects.vercel.app/login)
+[![Tests](https://img.shields.io/badge/Tests-30_passing-brightgreen.svg)](cypress/README.md)
+[![E2E](https://img.shields.io/badge/E2E-Cypress-purple.svg)](cypress/)
 [![Stack](https://img.shields.io/badge/Stack-React_|_Node_|_MongoDB-blue.svg)](https://github.com/sujith0613/DBMS_ICPS)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)](https://github.com/sujith0613/DBMS_ICPS)
@@ -185,6 +186,29 @@ Explore the system using these pre-configured credentials (password: `password`)
     ├── middleware/      # Auth & GridFS logic
     └── database.js      # MongoDB connection setup
 ```
+
+---
+
+##  Testing
+
+E2E test suite powered by [Cypress](https://www.cypress.io/) with API mocking via `cy.intercept()`. No backend or database required.
+
+| Category | Tests | Coverage |
+|----------|-------|----------|
+| Login Page | 3 | Render, demo buttons, auto-fill |
+| Role Auth (×5 roles) | 15 | Login, session restore, welcome messages |
+| Error Handling | 2 | Invalid credentials, failed API |
+| Navigation Guards | 2 | Unauth redirect, unknown routes |
+| Dashboard Data | 7 | Metrics, claims table, error states |
+| **Total** | **30** | Full RBAC E2E |
+
+```bash
+npm install
+npx cypress run --headless --browser chrome
+```
+
+[View test details →](cypress/README.md)
+![Cypress Test Run](cypress/screenshots/icps-rbac.cy.js/03-admin-dashboard.png)
 
 ---
 

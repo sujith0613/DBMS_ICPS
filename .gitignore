@@ -13,3 +13,6 @@ mongodb_data/
 # IDE
 .vscode/
 .idea/
+
+# Cypress
+cypress/videos/
