@@ -9,6 +9,71 @@
 
 ---
 
+##  Architecture Diagram
+
+The following diagram (generated via [GitDiagram](https://gitdiagram.com) API) visualizes the system architecture:
+
+```mermaid
+flowchart TD
+
+subgraph group_group_client["Client SPA"]
+  node_node_spa(("ICPS SPA<br/>React/Vite app<br/>[App.tsx]"))
+  node_node_auth_store["Auth Store<br/>client state<br/>[useAuthStore.ts]"]
+  node_node_api_client["API Client<br/>data access<br/>[api.ts]"]
+  node_node_layout["App Shell<br/>layout<br/>[PageLayout.tsx]"]
+  node_node_nav["Nav UI<br/>layout<br/>[Sidebar.tsx]"]
+  node_node_pages["Core Pages<br/>views<br/>[Claims.tsx]"]
+  node_node_widgets["UI Widgets<br/>components<br/>[MetricCard.tsx]"]
+  node_node_ui_primitives["UI Primitives<br/>design system<br/>[button.tsx]"]
+end
+
+subgraph group_group_server["API Server"]
+  node_node_server(("API Bootstrap<br/>Express server<br/>[server.js]"))
+  node_node_auth_mw["Auth Middleware<br/>[auth.js]"]
+  node_node_upload_mw["Upload Middleware<br/>[upload.js]"]
+  node_node_route_auth["Auth Routes<br/>api route<br/>[auth.js]"]
+  node_node_route_claims["Claims Routes<br/>api route<br/>[claims.js]"]
+  node_node_route_docs["Documents Routes<br/>api route<br/>[documents.js]"]
+  node_node_route_admin["Admin Routes<br/>api route<br/>[policies.js]"]
+  node_node_route_reviews["Review/Pay Routes<br/>api route"]
+  node_node_route_analytics["Analytics Routes<br/>api route<br/>[analytics.js]"]
+end
+
+subgraph group_group_data["Data Layer"]
+  node_node_models[("Domain Models<br/>Mongoose models<br/>[Claim.js]")]
+  node_node_gridfs[("GridFS Docs<br/>binary storage<br/>[documents.js]")]
+end
+
+node_node_spa -->|"renders"| node_node_layout
+node_node_layout -->|"uses"| node_node_nav
+node_node_nav -->|"navigates"| node_node_pages
+node_node_spa -->|"reads state"| node_node_auth_store
+node_node_pages -->|"calls"| node_node_api_client
+node_node_widgets -->|"built from"| node_node_ui_primitives
+node_node_spa -->|"composes"| node_node_widgets
+node_node_server -->|"mounts"| node_node_auth_mw
+node_node_server -->|"mounts"| node_node_upload_mw
+node_node_server -->|"registers"| node_node_route_auth
+node_node_server -->|"registers"| node_node_route_claims
+node_node_server -->|"registers"| node_node_route_docs
+node_node_server -->|"registers"| node_node_route_admin
+node_node_server -->|"registers"| node_node_route_reviews
+node_node_server -->|"registers"| node_node_route_analytics
+node_node_route_auth -->|"reads/writes"| node_node_models
+node_node_route_claims -->|"reads/writes"| node_node_models
+node_node_route_admin -->|"reads/writes"| node_node_models
+node_node_route_reviews -->|"reads/writes"| node_node_models
+node_node_route_analytics -->|"aggregates"| node_node_models
+node_node_route_docs -->|"stores files"| node_node_gridfs
+node_node_route_docs -->|"protects"| node_node_auth_mw
+node_node_api_client -->|"requests"| node_node_route_auth
+node_node_api_client -->|"requests"| node_node_route_claims
+node_node_api_client -->|"requests"| node_node_route_docs
+node_node_api_client -->|"requests"| node_node_route_admin
+node_node_api_client -->|"requests"| node_node_route_reviews
+node_node_api_client -->|"requests"| node_node_route_analytics
+```
+
 ##  Features
 
 ###  Enterprise Design System
@@ -128,4 +193,3 @@ Explore the system using these pre-configured credentials (password: `password`)
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
