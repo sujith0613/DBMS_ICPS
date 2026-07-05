@@ -11,7 +11,7 @@
 
 ##  Architecture Diagram
 
-The following diagram (generated via [GitDiagram](https://gitdiagram.com) API) visualizes the system architecture:
+Interactive architecture diagram via [GitDiagram](https://gitdiagram.com):
 
 ```mermaid
 flowchart TD
